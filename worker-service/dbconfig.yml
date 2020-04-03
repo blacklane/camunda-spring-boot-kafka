@@ -1,0 +1,18 @@
+default: &default
+  dialect: postgres
+  datasource: host=${DB_HOST} dbname=${DB_NAME} user=${DB_USER} password=${DB_PASSWORD} ${DB_OPTIONS}
+  dir: migrations
+  table: schema_migrations
+
+development:
+  <<: *default
+
+auto:
+  <<: *default
+
+testing:
+  <<: *default
+
+production:
+  <<: *default
+

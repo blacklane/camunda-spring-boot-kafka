@@ -1,0 +1,3 @@
+com/camunda/demo/springboot/conf/TestApplication.class
+com/camunda/demo/springboot/OrderProcessTest.class
+com/camunda/demo/springboot/conf/CamundaEngineTestCoverageConfiguration.class
