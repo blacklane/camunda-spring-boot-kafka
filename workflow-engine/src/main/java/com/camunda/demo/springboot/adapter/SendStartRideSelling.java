@@ -13,7 +13,7 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @Component
-public class SendShipGoodsKafkaAdapter implements JavaDelegate {
+public class SendStartRideSelling implements JavaDelegate {
 
   @Autowired
   private KafkaTemplate<String, String> kafkaTemplate;
