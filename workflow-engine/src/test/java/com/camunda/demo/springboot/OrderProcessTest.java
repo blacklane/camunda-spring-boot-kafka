@@ -25,11 +25,8 @@ import org.camunda.bpm.scenario.Scenario;
 import org.camunda.bpm.scenario.run.ProcessRunner.ExecutableRunner.StartingByStarter;
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -40,7 +37,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import com.camunda.demo.springboot.adapter.AmqpReceiver;
 import com.camunda.demo.springboot.conf.TestApplication;
 import com.camunda.demo.springboot.rest.OrderRestController;
 
@@ -58,17 +54,11 @@ public class OrderProcessTest {
 
   @Mock
   private ProcessScenario orderProcess;
-  
-  @Autowired
-  private RabbitTemplate rabbitTemplate;
 
   @Autowired
   private RestTemplate restTemplate;
 
   private MockRestServiceServer mockRestServer;
-
-  // Do not use the real one to avoid RabbitMQ being connected
-  private AmqpReceiver amqpReceiver;
   
   @Autowired
   private OrderRestController orderRestController; 
@@ -91,7 +81,6 @@ public class OrderProcessTest {
     MockitoAnnotations.initMocks(this);
     
     mockRestServer = MockRestServiceServer.createServer(restTemplate);
-//    amqpReceiver = new AmqpReceiver(rule.getProcessEngine());
 
     // default behavior for ReceiveTask's in process: just continue
     when(orderProcess.waitsAtReceiveTask(anyString())).thenReturn((messageSubscription) -> messageSubscription.receive());
