@@ -11,3 +11,7 @@ type EventConsumer interface {
 	Close() error
 	Config() kafka.ReaderConfig
 }
+
+const (
+	StartRideSelling string = "StartRideSelling"
+)

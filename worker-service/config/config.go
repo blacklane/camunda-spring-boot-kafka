@@ -39,9 +39,10 @@ type Config struct {
 	//DbUser     string `env:"DB_USER" envDefault:""`
 
 	// Kafka
-	KafkaBrokers       string `env:"KAFKA_BROKERS" envDefault:""`
-	KafkaTopic         string `env:"KAFKA_TOPIC_RIDES" envDefault:""`
-	KafkaConsumerGroup string `env:"KAFKA_CONSUMER_GROUP" envDefault:""`
+	KafkaBrokers       string `env:"KAFKA_BROKERS" envDefault:"localhost:9092"`
+	KafkaTopicRides    string `env:"KAFKA_TOPIC_RIDES" envDefault:"rides"`
+	KafkaTopicSelling  string `env:"KAFKA_TOPIC_RIDES" envDefault:"selling"`
+	KafkaConsumerGroup string `env:"KAFKA_CONSUMER_GROUP" envDefault:"auction-consumer"`
 }
 
 //func (cfg *Config) PrepareDbURI() string {

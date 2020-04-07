@@ -17,6 +17,9 @@ import (
 	"github.com/blacklane/worker/external"
 	"github.com/blacklane/worker/internal/handlers"
 	"github.com/blacklane/worker/internal/middleware"
+	"github.com/blacklane/worker/internal/events/consumer"
+	"github.com/blacklane/worker/internal/events/consumer/listeners"
+	"github.com/blacklane/worker/internal/events/producer"
 )
 
 func main() {
@@ -97,9 +100,11 @@ func initRouter(cfg config.Config) *chi.Mux {
 }
 
 func initKafkaListeners(cfg *config.Config) {
+	producer := producer.NewKafkaWriter(cfg.KafkaBrokersArray(), cfg.KafkaTopicRides)
+
 	// init kafka consumers here
-	//reader := consumer.GetKafkaReader(cfg.KafkaBrokers, cfg.KafkaTopic, cfg.KafkaConsumerGroup)
-	//consumer.StartKafkaConsumer(ridesReader, listener.SomeKafkaListener)
+	ridesReader := consumer.GetKafkaReader(cfg.KafkaBrokersArray(), cfg.KafkaTopicSelling, cfg.KafkaConsumerGroup)
+	consumer.StartKafkaConsumer(ridesReader, listeners.StartRideSellingListener, producer)
 }
 
 func gracefulShutdown(

@@ -13,23 +13,25 @@ import (
 )
 
 type (
-	HandlerFunc func(jsonBytes []byte, eventName string)
+	HandlerFunc func(jsonBytes []byte, eventName string, writer events.EventProducer)
 
 	KafkaConsumer struct {
 		listeners []HandlerFunc
 		reader    events.EventConsumer
+		writer 	  events.EventProducer
 	}
 )
 
-func newKafkaConsumer(reader events.EventConsumer) *KafkaConsumer {
+func newKafkaConsumer(reader events.EventConsumer, writer events.EventProducer) *KafkaConsumer {
 	return &KafkaConsumer{
 		listeners: []HandlerFunc{},
 		reader:    reader,
+		writer:	   writer,
 	}
 }
 
-func StartKafkaConsumer(reader *kafka.Reader, listener HandlerFunc) {
-	consumer := newKafkaConsumer(NewKafkaReaderWrapper(reader))
+func StartKafkaConsumer(reader *kafka.Reader, listener HandlerFunc, writer events.EventProducer) {
+	consumer := newKafkaConsumer(NewKafkaReaderWrapper(reader), writer)
 	consumer.AddListener(listener)
 
 	logger.Event("kafka_consumer_started").Msg(fmt.Sprintf("Starting kafka consumer on topic - %v\n", reader.Config().Topic))
@@ -63,7 +65,7 @@ func (kafka *KafkaConsumer) receiveMessage() {
 
 	logger.Event("event_received").Msg(fmt.Sprintf("Received Event %v on topic %v", eventName, kafka.reader.Config().Topic))
 	for _, handler := range kafka.listeners {
-		go handler(m.Value, eventName)
+		go handler(m.Value, eventName, kafka.writer)
 	}
 }
 

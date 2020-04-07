@@ -1,5 +1,6 @@
 package com.camunda.demo.springboot.adapter;
 
+import com.camunda.demo.springboot.events.RideEvent;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +17,19 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 public class SendStartRideSelling implements JavaDelegate {
 
   @Autowired
-  private KafkaTemplate<String, String> kafkaTemplate;
+  private KafkaTemplate<String, RideEvent> kafkaTemplate;
 
-  @Value(value = "${kafka.topicRides}")
+  @Value(value = "${kafka.topicSelling}")
   private String topic;
 
   public void sendKafkaMessage(String msg) {
-    ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, msg);
+    RideEvent event = new RideEvent("StartRideSelling", msg);
+    ListenableFuture<SendResult<String, RideEvent>> future = kafkaTemplate.send(topic, event);
 
-    future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+    future.addCallback(new ListenableFutureCallback<SendResult<String, RideEvent>>() {
 
       @Override
-      public void onSuccess(SendResult<String, String> result) {
+      public void onSuccess(SendResult<String, RideEvent> result) {
         System.out.println("Sent message=[" + msg +
                 "] with offset=[" + result.getRecordMetadata().offset() + "]");
       }

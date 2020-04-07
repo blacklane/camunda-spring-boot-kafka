@@ -28,9 +28,12 @@ func NewKafkaWriter(brokers []string, topic string) events.EventProducer {
 	}
 }
 
-func (producer *KafkaProducer) EmitEvent(ctx context.Context) {
-	event := ""
-	messageKey := "event-key"
+func (producer *KafkaProducer) EmitRideAcceptedEvent(ctx context.Context, rideUUID string) {
+	event := &RideAccepted{
+		Event: "RideAccepted",
+		Payload: rideUUID,
+	}
+	messageKey := fmt.Sprintf("ride-accepted-%s", rideUUID)
 
 	jsonValue, err := json.Marshal(event)
 	if err != nil {

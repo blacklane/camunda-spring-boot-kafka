@@ -3,6 +3,11 @@ package events
 import "context"
 
 type EventProducer interface {
-	EmitEvent(ctx context.Context)
+	EmitRideAcceptedEvent(ctx context.Context, rideUUID string)
 	Close() error
 }
+
+
+const (
+	RideAccepted string = "RideAccepted"
+)
